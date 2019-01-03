@@ -1,0 +1,14 @@
+# Files
+*.iml
+
+# Folders
+.idea/
+.gradle/
+build/
+
+#MacOS env
+.DS_Store
+
+#Logs
+RET.log
+/bin/
