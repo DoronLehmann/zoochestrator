@@ -81,7 +81,7 @@ public abstract class CuratorBaseLatch implements LeaderLatchListener {
 	 * @return true if it has the leadership, otherwise false
 	 */
 	public boolean hasLeadership() {
-		return leaderLatch.hasLeadership();
+		return leaderLatch != null ? leaderLatch.hasLeadership() : false;
 	}
 
 	/**
