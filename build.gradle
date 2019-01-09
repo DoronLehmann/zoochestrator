@@ -1,24 +1,39 @@
 apply plugin: 'java'
 apply plugin: 'maven'
 
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+}
+
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
-project.ext.buildNumber = 1.0
+
+group = 'com.imperva.zoochestrator'
+version = VERSION + (Boolean.valueOf(System.getProperty("snapshot")) ? "-SNAPSHOT" : "")
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.2.1'
 }
 
-jar {
-    baseName = "zoochestrator"
-    manifest {
-        attributes 'Implementation-Title': 'Imperva ZooChestrator', 'Implementation-Version': '1.0', 'Build-Number': buildNumber
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html4', true)
     }
 }
 
-repositories {
-    mavenCentral()
-}
+apply from: rootProject.file('gradle/release-bintray.gradle')
 
 dependencies {
 	compile group: 'org.apache.curator', name: 'curator-client', version: '2.12.0'

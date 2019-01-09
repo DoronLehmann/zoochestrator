@@ -1,0 +1,64 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:4.8.1'
+    }
+}
+
+
+apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
+apply plugin: org.jfrog.gradle.plugin.artifactory.ArtifactoryPlugin
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+
+bintrayUpload.dependsOn assemble
+bintrayUpload.dependsOn sourcesJar
+bintrayUpload.dependsOn javadocJar
+
+
+bintray {
+    user = project.hasProperty('bintray.user') ? project.property('bintray.user') : System.getenv('BINTRAY_USER')
+    key = project.hasProperty('bintray.key') ? project.property('bintray.key') : System.getenv('BINTRAY_KEY')
+    publications = ['libraryPublication']
+    override = true
+    pkg {
+        repo = 'imperva.opensource.maven.repository'
+        name = POM_ARTIFACT_ID
+        userOrg = 'imperva-admin'
+        licenses = ['Apache-2.0']
+        vcsUrl = GIT_PROJECT_URL
+        publish = true
+        publicDownloadNumbers = true
+        version {
+            name = VERSION
+            desc = 'zoochestrator ' + VERSION + ' final'
+            released  = new Date()
+        }
+    }
+}
+
+artifactory {
+    contextUrl = 'http://oss.jfrog.org'
+    publish {
+        repository {
+            repoKey = 'oss-snapshot-local'
+            username = project.hasProperty('bintray.user') ? project.property('bintray.user') : System.getenv('BINTRAY_USER')
+            password = project.hasProperty('bintray.key') ? project.property('bintray.key') : System.getenv('BINTRAY_KEY')
+        }
+        defaults {
+            publications('libraryPublication')
+            publishArtifacts = true
+            publishPom = true
+        }
+    }
+    resolve {
+        repoKey = 'jcenter'
+    }
+    clientConfig.info.setBuildNumber(System.getProperty('build.number'))
+}
