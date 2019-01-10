@@ -5,11 +5,19 @@ jdk:
 before_install:
 - chmod +x gradlew
 stages:
-- name: build
+  - name: build
+  - name: publish-snapshot
+    if: branch = master AND type IN (push)
+  - name: publish-release
+    if: branch =~ ^release\/.*$ AND type IN (push)
 jobs:
   include:
-  - stage: build
-    script: "./gradlew build"
+    - stage: build
+      script: "./gradlew build"
+    - stage: publish-snapshot
+      script: "./gradlew artifactoryPublish -x test -Dsnapshot=true -Dbuild.number=$TRAVIS_BUILD_NUMBER"
+    - stage: publish-release
+      script: "./gradlew bintrayUpload -x test -Dbuild.number=$TRAVIS_BUILD_NUMBER"
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -rf $HOME/.gradle/caches/*/plugin-resolution/
