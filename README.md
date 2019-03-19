@@ -1,3 +1,5 @@
+[![Build Status](https://www.travis-ci.org/imperva/zoochestrator.svg?branch=travis)](https://www.travis-ci.org/imperva/zoochestrator?branch=travis)
+
 # ZooChestrator
 ZooChestrator is a library for managing task distribution between several computer nodes.
 
