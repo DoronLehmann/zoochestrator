@@ -191,7 +191,7 @@ public static void main( String[] args ) throws Exception {
 
 If you have questions about the library, please be sure to check out the source code documentation. 
 
-If you still have questions, contact me at doron.lehmann@imperva.com
+If you still have questions, contact me at doron@doronlehmann.com
 
 # Reporting Bugs
 
